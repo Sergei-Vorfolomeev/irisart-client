@@ -1,0 +1,6 @@
+# Ignore artifacts:
+build
+coverage
+.idea
+package.json
+package-lock.json
