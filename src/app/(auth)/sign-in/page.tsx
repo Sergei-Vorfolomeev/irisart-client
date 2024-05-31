@@ -44,8 +44,7 @@ export default function SignIn() {
 
     if (res.ok) {
       const { accessToken } = await res.json()
-      console.log(accessToken)
-      router.replace('/')
+      router.replace('/dashboard')
     }
   }
 
