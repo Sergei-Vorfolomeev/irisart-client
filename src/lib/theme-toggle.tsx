@@ -34,7 +34,7 @@ export function ThemeToggle() {
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" side={'right'}>
             <DropdownMenuItem onClick={() => setTheme('light')}>
               Light
             </DropdownMenuItem>
