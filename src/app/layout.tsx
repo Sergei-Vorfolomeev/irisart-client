@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
+import { SignOutButton } from '@/components/moleculs/sign-out.button'
+import { Header } from '@/components/organisms/header'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>IrisArt</title>
+        <title>IrisArt &#9829;</title>
       </head>
       <body className={inter.className}>
         <ThemeProvider
