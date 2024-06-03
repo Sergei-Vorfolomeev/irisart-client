@@ -48,7 +48,8 @@ export default function SignUp() {
     })
 
     if (res.ok) {
-      router.replace('/sign-in')
+      localStorage.setItem('userEmail', email)
+      router.replace('/confirm-email')
     }
   }
 

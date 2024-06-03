@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const accessToken = request.headers.get('authorization')?.split(' ')[1] // Предполагается, что токен передается в формате "Bearer <token>"
+  const accessToken = request.cookies.get('accessToken')?.value
   console.log(accessToken)
   // Если токен отсутствует и пользователь пытается получить доступ не к странице логина
   if (!accessToken && !request.nextUrl.pathname.startsWith('/login')) {

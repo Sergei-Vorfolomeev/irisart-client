@@ -36,6 +36,7 @@ export default function SignIn() {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({
         email,
         password,
@@ -43,7 +44,6 @@ export default function SignIn() {
     })
 
     if (res.ok) {
-      const { accessToken } = await res.json()
       router.replace('/dashboard')
     }
   }
