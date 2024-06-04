@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
-import { SignOutButton } from '@/components/moleculs/sign-out.button'
-import { Header } from '@/components/organisms/header'
+import { UserStoreProvider } from '@/store/user-store-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,7 +28,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <UserStoreProvider>{children}</UserStoreProvider>
         </ThemeProvider>
       </body>
     </html>

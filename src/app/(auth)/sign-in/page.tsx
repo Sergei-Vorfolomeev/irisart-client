@@ -11,9 +11,12 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import AuthLayout from '@/app/(auth)/layout'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import { Spinner } from '@/components/icons/spinner'
+import { useState } from 'react'
+import { Code } from '@/utils/inter-layer-object'
+import { UserStoreProvider, useUserStore } from '@/store/user-store-provider'
 
 type FormData = {
   email: string
@@ -21,30 +24,32 @@ type FormData = {
 }
 
 export default function SignIn() {
+  const { signIn, isSignedIn } = useUserStore((state) => state)
+  const [loading, setLoading] = useState(false)
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormData>()
-
   const router = useRouter()
 
-  const onSubmit: SubmitHandler<FormData> = async ({ email, password }) => {
-    const res = await fetch('http://localhost:8080/api/auth/sign-in', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
+  console.log('from sign in page', isSignedIn)
 
-    if (res.ok) {
-      router.replace('/dashboard')
+  if (isSignedIn) {
+    router.replace('/dashboard')
+  }
+
+  const onSubmit: SubmitHandler<FormData> = async ({ email, password }) => {
+    try {
+      setLoading(true)
+      const { code } = await signIn(email, password)
+      if (code === Code.ok) {
+        router.replace('/dashboard')
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -76,7 +81,7 @@ export default function SignIn() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  href="src/app/auth#"
+                  href="/recover-password"
                   className="ml-auto inline-block text-sm underline"
                 >
                   Forgot your password?
@@ -95,7 +100,7 @@ export default function SignIn() {
               )}
             </div>
             <Button type="submit" className="w-full">
-              Login
+              {loading ? <Spinner /> : 'Login'}
             </Button>
             <Button variant="outline" className="w-full">
               Login with Google
