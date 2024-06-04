@@ -13,6 +13,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import { Spinner } from '@/components/icons/spinner'
+import { useState } from 'react'
 
 type FormData = {
   userName: string
@@ -21,6 +23,7 @@ type FormData = {
 }
 
 export default function SignUp() {
+  const [isSpinning, setIsSpinning] = useState(false)
   const {
     register,
     handleSubmit,
@@ -35,21 +38,28 @@ export default function SignUp() {
     email,
     password,
   }) => {
-    const res = await fetch('http://localhost:8080/api/auth/sign-up', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userName,
-        email,
-        password,
-      }),
-    })
+    try {
+      setIsSpinning(true)
+      const res = await fetch('http://localhost:8080/api/auth/sign-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName,
+          email,
+          password,
+        }),
+      })
 
-    if (res.ok) {
-      localStorage.setItem('userEmail', email)
-      router.replace('/confirm-email')
+      if (res.ok) {
+        localStorage.setItem('userEmail', email)
+        router.replace('/confirm-email')
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsSpinning(false)
     }
   }
 
@@ -104,8 +114,8 @@ export default function SignUp() {
                 <p className="text-red-500">{errors.password.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full">
-              Create an account
+            <Button type="submit" className="w-full" disabled={isSpinning}>
+              {isSpinning ? <Spinner /> : 'Create an account'}
             </Button>
             <Button variant="outline" className="w-full">
               Sign up with Google

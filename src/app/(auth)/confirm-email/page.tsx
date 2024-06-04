@@ -21,6 +21,8 @@ import {
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
+import { Code } from '@/utils/inter-layer-object'
+import { useUserStore } from '@/store/user-store-provider'
 
 const FormSchema = z.object({
   code: z.string().min(4, {
@@ -31,7 +33,9 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>
 
 export default function ConfirmEmail() {
-  const [time, setTimer] = useState(7)
+  const { confirmEmail } = useUserStore((state) => state)
+  const [timer, setTimer] = useState(7)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const inputOtpRef = useRef<HTMLInputElement>(null)
@@ -52,17 +56,16 @@ export default function ConfirmEmail() {
   })
 
   const onSubmit = async (data: FormData) => {
-    const res = await fetch('http://localhost:8080/api/auth/confirm-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
-
-    if (res.ok) {
-      router.replace('dashboard')
+    try {
+      setLoading(true)
+      const { code } = await confirmEmail(data.code)
+      if (code === Code.ok) {
+        router.replace('dashboard')
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -93,7 +96,7 @@ export default function ConfirmEmail() {
       setTimer((prevTime) => (prevTime > 0 ? prevTime - 1 : 0))
     }, 1000)
     return () => clearInterval(timer)
-  }, [time])
+  }, [timer])
 
   return (
     <Form {...form}>
@@ -108,23 +111,30 @@ export default function ConfirmEmail() {
             <FormItem>
               <FormLabel>Введите код из письма</FormLabel>
               <FormControl>
-                <InputOTP maxLength={4} {...field} autoFocus ref={inputOtpRef}>
+                <InputOTP
+                  maxLength={4}
+                  {...field}
+                  autoFocus
+                  ref={inputOtpRef}
+                  disabled={loading}
+                >
                   <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={0} className="text-2xl" />
+                    <InputOTPSlot index={1} className="text-2xl" />
+                    <InputOTPSlot index={2} className="text-2xl" />
+                    <InputOTPSlot index={3} className="text-2xl" />
                   </InputOTPGroup>
                 </InputOTP>
               </FormControl>
+              <FormDescription> {loading && 'Проверяем код'} </FormDescription>
               <FormDescription>
-                {time !== 0 &&
-                  `Повторно запросить код можно через ${time} секунд`}
+                {timer !== 0 ? (
+                  `Повторно запросить код можно через ${timer} секунд`
+                ) : (
+                  <Button onClick={handleResend}>Отправить код повторно</Button>
+                )}
               </FormDescription>
-              {time === 0 && (
-                <Button onClick={handleResend}>Отправить код повторно</Button>
-              )}
-              <FormMessage />
+              {/*<FormMessage/>*/}
             </FormItem>
           )}
         />
