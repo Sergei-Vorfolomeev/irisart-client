@@ -1,7 +1,7 @@
 export class InterLayerObject<T = null> {
   constructor(
     public code: Code,
-    public error?: string | unknown,
+    public error?: string | null,
     public data?: T,
   ) {}
 }

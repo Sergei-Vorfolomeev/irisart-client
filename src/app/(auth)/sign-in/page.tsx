@@ -14,9 +14,11 @@ import { Label } from '@/components/ui/label'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/icons/spinner'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Code } from '@/utils/inter-layer-object'
 import { useUserStore } from '@/store/user-store-provider'
+import { useAppStore } from '@/store/app.store'
+import { useToast } from '@/components/ui/use-toast'
 
 type FormData = {
   email: string
@@ -26,14 +28,15 @@ type FormData = {
 export default function SignIn() {
   const { signIn, isSignedIn } = useUserStore((state) => state)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>()
-  const router = useRouter()
 
-  console.log('from sign in page', isSignedIn)
+  const router = useRouter()
 
   if (isSignedIn) {
     router.replace('/')
@@ -42,7 +45,10 @@ export default function SignIn() {
   const onSubmit: SubmitHandler<FormData> = async ({ email, password }) => {
     try {
       setLoading(true)
-      const { code } = await signIn(email, password)
+      const { code, error } = await signIn(email, password)
+      if (error) {
+        setError(error)
+      }
       if (code === Code.ok) {
         router.replace('/')
       }

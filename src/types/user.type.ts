@@ -9,5 +9,5 @@ export type User = {
   email: string
   role: Roles
   banStatus: boolean
-  createdAt: Date
+  createdAt: Date | null
 }
