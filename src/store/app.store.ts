@@ -1,13 +1,11 @@
 import { create } from 'zustand'
 
-type RequestStatusType = 'idle' | 'pending' | 'success' | 'error'
+export type RequestStatusType = 'idle' | 'pending' | 'success' | 'error'
 
-type AppStore = {
-  app: {
-    isInitialized: boolean
-    status: RequestStatusType
-    error: null | string
-  }
+type AppState = {
+  isInitialized: boolean
+  status: RequestStatusType
+  error: null | string
 }
 
 type AppActions = {
@@ -16,16 +14,13 @@ type AppActions = {
   initializeApp: (value: boolean) => void
 }
 
-export const AppStore = create<AppStore & AppActions>((set) => ({
-  app: {
-    status: 'idle',
-    error: null,
-    isInitialized: false,
-  },
-  setAppStatus: (status) =>
-    set((state) => ({ ...state, app: { ...state.app, status } })),
-  setError: (error) =>
-    set((state) => ({ ...state, app: { ...state.app, error } })),
-  initializeApp: (value) =>
-    set((state) => ({ ...state, app: { ...state.app, isInitialized: value } })),
+export type AppStore = AppState & AppActions
+
+export const useAppStore = create<AppStore>((set) => ({
+  status: 'idle',
+  error: null,
+  isInitialized: false,
+  setAppStatus: (status) => set({ status }),
+  setError: (error) => set({ error }),
+  initializeApp: (value) => set({ isInitialized: value }),
 }))

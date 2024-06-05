@@ -33,14 +33,12 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>
 
 export default function ConfirmEmail() {
-  const { confirmEmail } = useUserStore((state) => state)
+  const { confirmEmail, resendCode, user } = useUserStore((state) => state)
   const [timer, setTimer] = useState(7)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const inputOtpRef = useRef<HTMLInputElement>(null)
-
-  const userEmail = localStorage.getItem('userEmail')
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -73,16 +71,7 @@ export default function ConfirmEmail() {
     form.reset()
     inputOtpRef.current?.focus()
     setTimer(7)
-    await fetch('http://localhost:8080/api/auth/resend-code', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        email: userEmail,
-      }),
-    })
+    await resendCode(user.email)
   }
 
   useEffect(() => {
@@ -99,46 +88,56 @@ export default function ConfirmEmail() {
   }, [timer])
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-4 flex flex-col items-center"
-      >
-        <FormField
-          control={form.control}
-          name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Введите код из письма</FormLabel>
-              <FormControl>
-                <InputOTP
-                  maxLength={4}
-                  {...field}
-                  autoFocus
-                  ref={inputOtpRef}
-                  disabled={loading}
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} className="text-2xl" />
-                    <InputOTPSlot index={1} className="text-2xl" />
-                    <InputOTPSlot index={2} className="text-2xl" />
-                    <InputOTPSlot index={3} className="text-2xl" />
-                  </InputOTPGroup>
-                </InputOTP>
-              </FormControl>
-              <FormDescription> {loading && 'Проверяем код'} </FormDescription>
-              <FormDescription>
-                {timer !== 0 ? (
-                  `Повторно запросить код можно через ${timer} секунд`
-                ) : (
-                  <Button onClick={handleResend}>Отправить код повторно</Button>
-                )}
-              </FormDescription>
-              {/*<FormMessage/>*/}
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+    <div className="flex flex-col items-center gap-4">
+      <h1 className="text-2xl font-bold">
+        Приветствуем, <span className="text-destructive">{user.userName}</span>
+      </h1>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-4 flex flex-col items-center"
+        >
+          <FormField
+            control={form.control}
+            name="code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Введите код из письма</FormLabel>
+                <FormControl>
+                  <InputOTP
+                    maxLength={4}
+                    {...field}
+                    autoFocus
+                    ref={inputOtpRef}
+                    disabled={loading}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} className="text-2xl" />
+                      <InputOTPSlot index={1} className="text-2xl" />
+                      <InputOTPSlot index={2} className="text-2xl" />
+                      <InputOTPSlot index={3} className="text-2xl" />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormControl>
+                <FormDescription>
+                  {' '}
+                  {loading && 'Проверяем код'}{' '}
+                </FormDescription>
+                <FormDescription>
+                  {timer !== 0 ? (
+                    `Повторно запросить код можно через ${timer} секунд`
+                  ) : (
+                    <Button onClick={handleResend}>
+                      Отправить код повторно
+                    </Button>
+                  )}
+                </FormDescription>
+                {/*<FormMessage/>*/}
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </div>
   )
 }

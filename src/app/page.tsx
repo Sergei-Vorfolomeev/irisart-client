@@ -73,19 +73,18 @@ import {
 } from '@/components/ui/tooltip'
 import { Sidebar } from '@/components/organisms/sidebar'
 import { Header } from '@/components/organisms/header'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useUserStore } from '@/store/user-store-provider'
-import { Code } from '@/utils/inter-layer-object'
 
 export default function Home() {
-  const { me, setSignedIn } = useUserStore((state) => state)
+  const { me } = useUserStore((state) => state)
 
   useEffect(() => {
     const meRequest = async () => {
       await me()
     }
     meRequest()
-  }, [me, setSignedIn])
+  }, [me])
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">

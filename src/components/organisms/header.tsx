@@ -10,7 +10,7 @@ import { useUserStore } from '@/store/user-store-provider'
 export function Header() {
   const { isSignedIn, signOut } = useUserStore((state) => state)
   const router = useRouter()
-  console.log('from header', isSignedIn)
+  console.log('signIN from header', isSignedIn)
 
   const handleSignIn = () => {
     router.push('/sign-in')

@@ -15,6 +15,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/icons/spinner'
 import { useState } from 'react'
+import { useUserStore } from '@/store/user-store-provider'
+import { Code } from '@/utils/inter-layer-object'
 
 type FormData = {
   userName: string
@@ -24,6 +26,7 @@ type FormData = {
 
 export default function SignUp() {
   const [isSpinning, setIsSpinning] = useState(false)
+  const { signUp } = useUserStore((state) => state)
   const {
     register,
     handleSubmit,
@@ -40,20 +43,8 @@ export default function SignUp() {
   }) => {
     try {
       setIsSpinning(true)
-      const res = await fetch('http://localhost:8080/api/auth/sign-up', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userName,
-          email,
-          password,
-        }),
-      })
-
-      if (res.ok) {
-        localStorage.setItem('userEmail', email)
+      const { code } = await signUp(userName, email, password)
+      if (code === Code.ok) {
         router.replace('/confirm-email')
       }
     } catch (e) {
