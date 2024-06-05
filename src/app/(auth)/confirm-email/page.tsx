@@ -60,7 +60,7 @@ export default function ConfirmEmail() {
       setLoading(true)
       const { code } = await confirmEmail(data.code)
       if (code === Code.ok) {
-        router.replace('dashboard')
+        router.replace('/')
       }
     } catch (e) {
       console.error(e)

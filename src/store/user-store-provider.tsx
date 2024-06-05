@@ -1,19 +1,19 @@
 'use client'
 
-import { StoreApi, useStore } from 'zustand'
-import { createContext, ReactNode, useContext, useRef } from 'react'
-import { createUserStore, initUserStore, UserStore } from '@/store/user.store'
+import { type ReactNode, createContext, useRef, useContext } from 'react'
+import { type StoreApi, useStore } from 'zustand'
+import { createUserStore, UserStore } from '@/store/user.store'
 
 export const UserStoreContext = createContext<StoreApi<UserStore> | null>(null)
 
-export type UserStoreProviderProps = {
+export interface UserStoreProviderProps {
   children: ReactNode
 }
 
 export const UserStoreProvider = ({ children }: UserStoreProviderProps) => {
   const storeRef = useRef<StoreApi<UserStore>>()
   if (!storeRef.current) {
-    storeRef.current = createUserStore(initUserStore())
+    storeRef.current = createUserStore()
   }
 
   return (

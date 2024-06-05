@@ -22,14 +22,16 @@ export default function RootLayout({
         <title>IrisArt &#9829;</title>
       </head>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <UserStoreProvider>{children}</UserStoreProvider>
-        </ThemeProvider>
+        <UserStoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </UserStoreProvider>
       </body>
     </html>
   )
