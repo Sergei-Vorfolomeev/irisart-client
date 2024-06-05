@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/icons/spinner'
 import { useState } from 'react'
 import { Code } from '@/utils/inter-layer-object'
-import { UserStoreProvider, useUserStore } from '@/store/user-store-provider'
+import { useUserStore } from '@/store/user-store-provider'
 
 type FormData = {
   email: string
@@ -36,7 +36,7 @@ export default function SignIn() {
   console.log('from sign in page', isSignedIn)
 
   if (isSignedIn) {
-    router.replace('/dashboard')
+    router.replace('/')
   }
 
   const onSubmit: SubmitHandler<FormData> = async ({ email, password }) => {
@@ -44,7 +44,7 @@ export default function SignIn() {
       setLoading(true)
       const { code } = await signIn(email, password)
       if (code === Code.ok) {
-        router.replace('/dashboard')
+        router.replace('/')
       }
     } catch (e) {
       console.error(e)
