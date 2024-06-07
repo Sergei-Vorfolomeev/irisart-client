@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { User } from '@/types/user.type'
+import { User } from '@/interfaces/user.interface'
 
 const instance = axios.create({
   baseURL: 'http://localhost:8080/api/auth',

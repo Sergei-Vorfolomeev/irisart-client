@@ -5,12 +5,11 @@ import { BsFiletypeSvg } from 'react-icons/bs'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Code } from '@/utils/inter-layer-object'
-import { useUserStore } from '@/store/user-store-provider'
+import { useUserStore } from '@/store/user.store.provider'
 
 export function Header() {
   const { isSignedIn, signOut } = useUserStore((state) => state)
   const router = useRouter()
-  console.log('signIN from header', isSignedIn)
 
   const handleSignIn = () => {
     router.push('/sign-in')

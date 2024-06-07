@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
 import { Code } from '@/utils/inter-layer-object'
-import { useUserStore } from '@/store/user-store-provider'
+import { useUserStore } from '@/store/user.store.provider'
 
 const FormSchema = z.object({
   code: z.string().min(4, {

@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/icons/spinner'
 import { useEffect, useState } from 'react'
 import { Code } from '@/utils/inter-layer-object'
-import { useUserStore } from '@/store/user-store-provider'
+import { useUserStore } from '@/store/user.store.provider'
 import { useAppStore } from '@/store/app.store'
 import { useToast } from '@/components/ui/use-toast'
 

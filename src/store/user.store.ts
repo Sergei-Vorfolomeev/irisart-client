@@ -1,10 +1,11 @@
 import { createStore } from 'zustand/vanilla'
 import { devtools, persist } from 'zustand/middleware'
-import { Roles, User } from '@/types/user.type'
+import { Roles, User } from '@/interfaces/user.interface'
 import { Code, InterLayerObject } from '@/utils/inter-layer-object'
-import { authApi } from '@/api/auth.api'
+import { authApi } from '@/features/auth/api/auth.api'
 import { handleServerError } from '@/utils/handle-server-error'
 import { useAppStore } from '@/store/app.store'
+import axios from 'axios'
 
 export type UserState = {
   isSignedIn: boolean
@@ -90,7 +91,10 @@ export const createUserStore = (initState: UserState = defaultInitState) => {
               set(() => ({ user: res.data }))
               return new InterLayerObject(Code.ok)
             } catch (e) {
-              set(() => initState)
+              if (axios.isAxiosError(e) && e.response?.status === 401) {
+                set(() => initState)
+                return new InterLayerObject(Code.error)
+              }
               return handleServerError(setError, e)
             }
           },
