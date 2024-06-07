@@ -4,12 +4,13 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
-import { UserStoreProvider } from '@/store/user-store-provider'
+import { UserStoreProvider } from '@/store/user.store.provider'
 import { ToastProvider } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
 import { useEffect } from 'react'
 import { useAppStore } from '@/store/app.store'
 import { useToast } from '@/components/ui/use-toast'
+import { ProductsStoreProvider } from '@/features/products/store/products.store.provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -42,17 +43,19 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <UserStoreProvider>
-          <ToastProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-            </ThemeProvider>
-          </ToastProvider>
+          <ProductsStoreProvider>
+            <ToastProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+                <Toaster />
+              </ThemeProvider>
+            </ToastProvider>
+          </ProductsStoreProvider>
         </UserStoreProvider>
       </body>
     </html>

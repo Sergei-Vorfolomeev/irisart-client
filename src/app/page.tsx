@@ -74,7 +74,7 @@ import {
 import { Sidebar } from '@/components/organisms/sidebar'
 import { Header } from '@/components/organisms/header'
 import { useEffect } from 'react'
-import { useUserStore } from '@/store/user-store-provider'
+import { useUserStore } from '@/store/user.store.provider'
 
 export default function Home() {
   const { me } = useUserStore((state) => state)

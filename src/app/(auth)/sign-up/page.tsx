@@ -15,7 +15,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/icons/spinner'
 import { useState } from 'react'
-import { useUserStore } from '@/store/user-store-provider'
+import { useUserStore } from '@/store/user.store.provider'
 import { Code } from '@/utils/inter-layer-object'
 
 type FormData = {
