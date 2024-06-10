@@ -21,24 +21,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ProductsCategory } from '@/interfaces/product.interface'
+import { Product, ProductsCategory } from '@/interfaces/product.interface'
 import { Checkbox } from '@/components/ui/checkbox'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useProductsStore } from '@/features/products/store/products.store.provider'
-import { useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 const productSchema = z.object({
   name: z.string().trim().min(1, 'Обязательное поле'),
   description: z.string().trim().min(1, 'Обязательное поле'),
-  category: z
-    .nativeEnum(ProductsCategory, {
-      required_error: 'Категория обязательна',
-      message: 'Некорректная категория',
-    })
-    .refine((val) => Object.values(ProductsCategory).includes(val), {
-      message: 'Некорректная категория',
-    }),
+  category: z.nativeEnum(ProductsCategory, {
+    required_error: 'Категория обязательна',
+    message: 'Некорректная категория',
+  }),
   price: z
     .number({
       message: 'Обязательное поле. Должно быть числом',
@@ -49,46 +45,55 @@ const productSchema = z.object({
 
 type ProductSchemaType = z.infer<typeof productSchema>
 
-export const AddProductDialog = () => {
-  const { addProduct } = useProductsStore((state) => state)
+type PropsType = {
+  mode: 'add' | 'edit'
+  trigger: ReactNode
+  product?: Product
+}
 
+export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
+  const { addProduct, updateProduct } = useProductsStore((state) => state)
   const [isOpen, setIsOpen] = useState(false)
 
   const { handleSubmit, control, reset } = useForm<ProductSchemaType>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      category: undefined,
-      price: undefined,
-      isAvailable: false,
+      name: product?.name || '',
+      description: product?.description || '',
+      category: product?.category || undefined,
+      price: product?.price || undefined,
+      isAvailable: product?.isAvailable || false,
     },
   })
 
   const onSubmit: SubmitHandler<ProductSchemaType> = async (data) => {
-    await addProduct(data)
-    reset()
+    if (mode === 'edit' && product) {
+      await updateProduct(product?.id, data)
+    } else {
+      await addProduct(data)
+    }
     setIsOpen(false)
+    reset()
   }
 
-  const handleDialogClose = (open: boolean) => {
-    if (!open) reset()
+  const handleOpenChange = (open: boolean) => {
     setIsOpen(open)
+    if (!open) {
+      reset()
+    }
+    console.log('handleOpenChange works, open:', open)
   }
+
+  console.log(isOpen)
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => handleDialogClose(open)}>
-      <DialogTrigger asChild>
-        <Button size="sm" className="h-8 gap-1" onClick={() => setIsOpen(true)}>
-          <PlusCircle className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-            Add Product
-          </span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={(open) => handleOpenChange(open)}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Добавить новый товар</DialogTitle>
+          <DialogTitle>
+            {mode === 'add' ? 'Добавить новый товар' : 'Изменить товар'}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4 py-4">
@@ -232,7 +237,9 @@ export const AddProductDialog = () => {
             />
           </div>
           <DialogFooter>
-            <Button type="submit">Добавить товар</Button>
+            <Button type="submit">
+              {mode === 'add' ? 'Добавить товар' : 'Сохранить изменения'}
+            </Button>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Close
