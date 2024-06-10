@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla'
 import { devtools, persist } from 'zustand/middleware'
 import { useAppStore } from '@/store/app.store'
-import { AddProductType, Product } from '@/interfaces/product.interface'
+import { ProductRequestType, Product } from '@/interfaces/product.interface'
 import { Code, InterLayerObject } from '@/utils/inter-layer-object'
 import { GetAllProductsQueryParams } from '@/features/products/types/get-all-products-query-params'
 import { ProductsApi } from '@/features/products/api/products.api'
@@ -16,7 +16,11 @@ export type ProductsActions = {
   getAllProducts: (
     queryParams: GetAllProductsQueryParams,
   ) => Promise<InterLayerObject>
-  addProduct: (product: AddProductType) => Promise<InterLayerObject>
+  addProduct: (product: ProductRequestType) => Promise<InterLayerObject>
+  updateProduct: (
+    id: string,
+    product: ProductRequestType,
+  ) => Promise<InterLayerObject>
   deleteProduct: (productId: string) => Promise<InterLayerObject>
 }
 
@@ -50,10 +54,26 @@ export const createProductsStore = (
               set({ isLoading: false })
             }
           },
-          addProduct: async (product: AddProductType) => {
+          addProduct: async (product: ProductRequestType) => {
             set({ isLoading: true })
             try {
               await ProductsApi.addProduct(product)
+              const res = await ProductsApi.getAllProducts({})
+              set({ products: res.data })
+              return new InterLayerObject(Code.ok)
+            } catch (e) {
+              return handleServerError(setError, e)
+            } finally {
+              set({ isLoading: false })
+            }
+          },
+          updateProduct: async (
+            id: string,
+            product: ProductRequestType,
+          ): Promise<InterLayerObject> => {
+            set({ isLoading: true })
+            try {
+              await ProductsApi.updateProduct(id, product)
               const res = await ProductsApi.getAllProducts({})
               set({ products: res.data })
               return new InterLayerObject(Code.ok)

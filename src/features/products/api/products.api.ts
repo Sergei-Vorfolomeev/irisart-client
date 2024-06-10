@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { AddProductType, Product } from '@/interfaces/product.interface'
+import { ProductRequestType, Product } from '@/interfaces/product.interface'
 import { GetAllProductsQueryParams } from '@/features/products/types/get-all-products-query-params'
 
 const instance = axios.create({
@@ -12,8 +12,12 @@ export class ProductsApi {
     return instance.get<Product[]>('', { params: queryParams })
   }
 
-  static async addProduct(product: AddProductType) {
+  static async addProduct(product: ProductRequestType) {
     return instance.post<Product>('', product)
+  }
+
+  static async updateProduct(id: string, product: ProductRequestType) {
+    return instance.put<void>(`/${id}`, product)
   }
 
   static async deleteProduct(id: string) {

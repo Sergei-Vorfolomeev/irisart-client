@@ -16,4 +16,4 @@ export enum ProductsCategory {
   ceramics = 'ceramics',
 }
 
-export type AddProductType = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>
+export type ProductRequestType = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>

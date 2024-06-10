@@ -7,17 +7,15 @@ import {
   Home,
   LineChart,
   ListFilter,
-  MoreHorizontal,
   Package,
   Package2,
   PanelLeft,
+  PlusCircle,
   Search,
   Settings,
   ShoppingCart,
   Users2,
 } from 'lucide-react'
-
-import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,14 +25,6 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -46,14 +36,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Tooltip,
@@ -63,8 +45,9 @@ import {
 } from '@/components/ui/tooltip'
 import { useProductsStore } from '@/features/products/store/products.store.provider'
 import { useEffect } from 'react'
-import { format } from 'date-fns/format'
-import { AddProductDialog } from '@/components/moleculs/add-product-dialog'
+import { ProductDialog } from '@/features/products/components/product-dialog'
+import { ProductsTable } from '@/features/products/components/products-table'
+import { AddProductButton } from '@/features/products/components/add-product.button'
 
 export default function Products() {
   const { products, isLoading, getAllProducts, deleteProduct } =
@@ -315,119 +298,15 @@ export default function Products() {
                     Export
                   </span>
                 </Button>
-                <AddProductDialog />
+                <AddProductButton />
               </div>
             </div>
             <TabsContent value="all">
-              <Card x-chunk="dashboard-06-chunk-0">
-                <CardHeader>
-                  <CardTitle>Products</CardTitle>
-                  <CardDescription>
-                    Manage your products and view their sales performance.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="hidden w-[100px] sm:table-cell">
-                          <span className="sr-only">Image</span>
-                        </TableHead>
-                        <TableHead>Название</TableHead>
-                        <TableHead>Описание</TableHead>
-                        <TableHead>Категория</TableHead>
-                        <TableHead>Наличие</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Цена
-                        </TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Дата создания
-                        </TableHead>
-                        <TableHead>
-                          <span className="sr-only">Actions</span>
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {isLoading ? (
-                        <div>
-                          {/*<Skeleton className="h-44 w-full" />*/}
-                          <TableRow>
-                            <div>Loading</div>
-                          </TableRow>
-                        </div>
-                      ) : (
-                        products.map((product) => (
-                          <TableRow key={product.id}>
-                            <TableCell className="hidden sm:table-cell">
-                              <Image
-                                alt="Product image"
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={product.image || ''}
-                                width="64"
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              {product.name}
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              {product.description}
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              {product.category}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">
-                                {product.isAvailable
-                                  ? 'В наличии'
-                                  : 'Нет в наличии'}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {product.price}
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              {format(product.createdAt, 'dd.MM.yyyy')}
-                            </TableCell>
-                            <TableCell>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    aria-haspopup="true"
-                                    size="icon"
-                                    variant="ghost"
-                                  >
-                                    <MoreHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      handleDeleteProduct(product.id)
-                                    }
-                                  >
-                                    Delete
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-                <CardFooter>
-                  <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>32</strong>{' '}
-                    products
-                  </div>
-                </CardFooter>
-              </Card>
+              <ProductsTable
+                products={products}
+                isLoading={isLoading}
+                onDeleteProduct={handleDeleteProduct}
+              />
             </TabsContent>
           </Tabs>
         </main>
