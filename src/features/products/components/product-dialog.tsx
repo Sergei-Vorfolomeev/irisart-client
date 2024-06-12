@@ -8,7 +8,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { PlusCircle } from 'lucide-react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -27,6 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useProductsStore } from '@/features/products/store/products.store.provider'
 import { ReactNode, useEffect, useState } from 'react'
+import { Spinner } from '@/components/icons/spinner'
 
 const productSchema = z.object({
   name: z.string().trim().min(1, 'Обязательное поле'),
@@ -52,7 +52,9 @@ type PropsType = {
 }
 
 export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
-  const { addProduct, updateProduct } = useProductsStore((state) => state)
+  const { addProduct, updateProduct, isLoading } = useProductsStore(
+    (state) => state,
+  )
   const [isOpen, setIsOpen] = useState(false)
 
   const { handleSubmit, control, reset } = useForm<ProductSchemaType>({
@@ -81,10 +83,7 @@ export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
     if (!open) {
       reset()
     }
-    console.log('handleOpenChange works, open:', open)
   }
-
-  console.log(isOpen)
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => handleOpenChange(open)}>
@@ -237,8 +236,18 @@ export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
             />
           </div>
           <DialogFooter>
-            <Button type="submit">
-              {mode === 'add' ? 'Добавить товар' : 'Сохранить изменения'}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="min-w-[150px]"
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : mode === 'add' ? (
+                'Добавить товар'
+              ) : (
+                'Сохранить изменения'
+              )}
             </Button>
             <DialogClose asChild>
               <Button type="button" variant="secondary">

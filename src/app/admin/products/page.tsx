@@ -10,7 +10,6 @@ import {
   Package,
   Package2,
   PanelLeft,
-  PlusCircle,
   Search,
   Settings,
   ShoppingCart,
@@ -45,9 +44,9 @@ import {
 } from '@/components/ui/tooltip'
 import { useProductsStore } from '@/features/products/store/products.store.provider'
 import { useEffect } from 'react'
-import { ProductDialog } from '@/features/products/components/product-dialog'
 import { ProductsTable } from '@/features/products/components/products-table'
 import { AddProductButton } from '@/features/products/components/add-product.button'
+import { ProductsCategory } from '@/interfaces/product.interface'
 
 export default function Products() {
   const { products, isLoading, getAllProducts, deleteProduct } =
@@ -56,6 +55,8 @@ export default function Products() {
   const handleDeleteProduct = async (productId: string) => {
     await deleteProduct(productId)
   }
+
+  const tabValues = ['all', 'painting', 'ceramics']
 
   useEffect(() => {
     getAllProducts({})
@@ -263,11 +264,24 @@ export default function Products() {
           <Tabs defaultValue="all">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="draft">Draft</TabsTrigger>
-                <TabsTrigger value="archived" className="hidden sm:flex">
-                  Archived
+                <TabsTrigger value="all" onClick={() => getAllProducts({})}>
+                  Все
+                </TabsTrigger>
+                <TabsTrigger
+                  value="ceramics"
+                  onClick={() =>
+                    getAllProducts({ category: ProductsCategory.ceramics })
+                  }
+                >
+                  Керамика
+                </TabsTrigger>
+                <TabsTrigger
+                  value="painting"
+                  onClick={() =>
+                    getAllProducts({ category: ProductsCategory.painting })
+                  }
+                >
+                  Живопись
                 </TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
@@ -301,13 +315,15 @@ export default function Products() {
                 <AddProductButton />
               </div>
             </div>
-            <TabsContent value="all">
-              <ProductsTable
-                products={products}
-                isLoading={isLoading}
-                onDeleteProduct={handleDeleteProduct}
-              />
-            </TabsContent>
+            {tabValues.map((value) => (
+              <TabsContent key={value} value={value}>
+                <ProductsTable
+                  products={products}
+                  isLoading={isLoading}
+                  onDeleteProduct={handleDeleteProduct}
+                />
+              </TabsContent>
+            ))}
           </Tabs>
         </main>
       </div>
