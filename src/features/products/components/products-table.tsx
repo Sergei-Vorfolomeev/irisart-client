@@ -20,12 +20,10 @@ import { format } from 'date-fns/format'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { Delete, MoreHorizontal, Trash } from 'lucide-react'
+import { MoreHorizontal, Trash } from 'lucide-react'
 import { Product } from '@/interfaces/product.interface'
 import { EditProductButton } from '@/features/products/components/edit-product.button'
 
@@ -43,10 +41,8 @@ export const ProductsTable = ({
   return (
     <Card x-chunk="dashboard-06-chunk-0">
       <CardHeader>
-        <CardTitle>Products</CardTitle>
-        <CardDescription>
-          Manage your products and view their sales performance.
-        </CardDescription>
+        <CardTitle>Товары</CardTitle>
+        <CardDescription>Здесь возможно некое описание</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -122,10 +118,7 @@ export const ProductsTable = ({
                         align="end"
                         className={'flex flex-col justify-start'}
                       >
-                        {/*<DropdownMenuItem>*/}
                         <EditProductButton product={product} />
-                        {/*</DropdownMenuItem>*/}
-                        {/*<DropdownMenuItem>*/}
                         <Button
                           variant={'ghost'}
                           className="h-8 gap-1 justify-start"
@@ -136,7 +129,6 @@ export const ProductsTable = ({
                             Удалить
                           </span>
                         </Button>
-                        {/*</DropdownMenuItem>*/}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

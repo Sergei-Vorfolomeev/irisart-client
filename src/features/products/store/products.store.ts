@@ -58,8 +58,8 @@ export const createProductsStore = (
             set({ isLoading: true })
             try {
               await ProductsApi.addProduct(product)
-              const res = await ProductsApi.getAllProducts({})
-              set({ products: res.data })
+              // const res = await ProductsApi.getAllProducts({})
+              // set({ products: res.data })
               return new InterLayerObject(Code.ok)
             } catch (e) {
               return handleServerError(setError, e)
