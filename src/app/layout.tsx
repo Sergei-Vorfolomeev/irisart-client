@@ -11,7 +11,6 @@ import { useEffect } from 'react'
 import { useAppStore } from '@/store/app.store'
 import { useToast } from '@/components/ui/use-toast'
 import { ProductsStoreProvider } from '@/features/products/store/products.store.provider'
-import { ToastContainer } from 'react-toastify'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,7 +37,7 @@ export default function RootLayout({
     }
   }, [error, toast])
   return (
-    <html lang="en">
+    <html lang="ru">
       <head>
         <title>IrisArt &#9829;</title>
       </head>

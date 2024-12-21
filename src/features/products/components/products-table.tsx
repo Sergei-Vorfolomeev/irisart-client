@@ -93,7 +93,7 @@ export const ProductsTable = ({
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {product.isAvailable ? 'В наличии' : 'Нет в наличии'}
+                      {product.inStock ? 'В наличии' : 'Нет в наличии'}
                     </Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">

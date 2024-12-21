@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { ProductRequestType, Product } from '@/interfaces/product.interface'
+import {
+  ProductRequestType,
+  Product,
+  Paginator,
+} from '@/interfaces/product.interface'
 import { GetAllProductsQueryParams } from '@/features/products/types/get-all-products-query-params'
 
 const instance = axios.create({
@@ -9,7 +13,7 @@ const instance = axios.create({
 
 export class ProductsApi {
   static async getAllProducts(queryParams: GetAllProductsQueryParams) {
-    return instance.get<Product[]>('', { params: queryParams })
+    return instance.get<Paginator<Product[]>>('', { params: queryParams })
   }
 
   static async addProduct(product: ProductRequestType) {

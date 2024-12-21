@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Code } from '@/utils/inter-layer-object'
 import { useUserStore } from '@/store/user.store.provider'
+import { ArticlesStoreProvider } from '@/features/articles/store/articles.store.provider'
 
 export function Header() {
   const { isSignedIn, signOut } = useUserStore((state) => state)
@@ -23,15 +24,17 @@ export function Header() {
   }
 
   return (
-    <div className="flex items-center justify-between w-full h-16 p-6 bg-destructive">
+    <div className="flex items-center justify-between w-full h-16 p-6 bg-emerald-300">
       <BsFiletypeSvg className="w-12 h-12" />
-      <NavMenu />
+      <ArticlesStoreProvider>
+        <NavMenu />
+      </ArticlesStoreProvider>
       {isSignedIn ? (
-        <Button variant={'outline'} onClick={handleSignOut}>
+        <Button variant="outline" onClick={handleSignOut}>
           Выйти
         </Button>
       ) : (
-        <Button variant={'outline'} onClick={handleSignIn}>
+        <Button variant="outline" onClick={handleSignIn}>
           Войти
         </Button>
       )}

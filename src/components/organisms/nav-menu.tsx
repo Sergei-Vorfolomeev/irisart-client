@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
@@ -13,60 +14,83 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
+import Image from 'next/image'
+import { useArticlesStore } from '@/features/articles/store/articles.store.provider'
 
-const components: { title: string; href: string; description: string }[] = [
+interface INavList {
+  title: string
+  href: string
+  description: string
+}
+
+const navList: INavList[] = [
   {
-    title: 'Ну короч тут всякое разное',
+    title: 'Изделия из керамики',
     href: '/docs/primitives/alert-dialog',
     description:
-      'A modal dialog that interrupts the user with important content and expects a response.',
+      'Коллекция уникальных керамических изделий, включая вазы, тарелки и художественные элементы. Идеально подходят для декора и повседневного использования.',
   },
   {
-    title: 'Керамика',
+    title: 'Акварельная живопись',
     href: '/docs/primitives/hover-card',
     description:
-      'For sighted users to preview content available behind a link.',
+      'Тонкие и яркие акварельные картины, которые захватывают красоту природы и эмоции через нежные цвета и текстуры.',
   },
   {
-    title: 'Зеркала',
+    title: 'Масляная живопись',
     href: '/docs/primitives/progress',
     description:
-      'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
+      'Картины, написанные масляными красками, которые отличаются глубиной цвета и богатством текстуры. Идеально подходят для создания выразительных образов.',
   },
   {
-    title: 'Всякая-всячина',
+    title: 'Ювелирные украшения',
     href: '/docs/primitives/scroll-area',
-    description: 'Visually or semantically separates content.',
+    description:
+      'Элегантные и уникальные ювелирные изделия, созданные с вниманием к деталям. Каждое украшение является произведением искусства.',
   },
   {
-    title: 'Тарелки',
-    href: '/docs/primitives/tabs',
+    title: 'Современная скульптура',
+    href: '/docs/primitives/sculpture',
     description:
-      'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
+      'Креативные 3D-изделия, которые добавляют современный акцент в любой интерьер. Сделано из различных материалов, таких как металл, дерево и камень.',
   },
   {
-    title: 'Осьминоги',
-    href: '/docs/primitives/tooltip',
+    title: 'Ткани и текстиль',
+    href: '/docs/primitives/fabric',
     description:
-      'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
+      'Оригинальные текстильные изделия, включая подушки, пледы и скатерти, выполненные в уникальных дизайнах и узорах.',
+  },
+  {
+    title: 'Графические дизайны',
+    href: '/docs/primitives/graphic-design',
+    description:
+      'Создание уникальных графических работ, включая постеры, иллюстрации и цифровые произведения искусства. Идеально для декора стен.',
+  },
+  {
+    title: 'Фотографии и искусство',
+    href: '/docs/primitives/photography',
+    description:
+      'Сборник художественной фотографии, которая запечатлевает красоту момента и передает глубокие эмоции через визуальную историю.',
   },
 ]
 
 export function NavMenu() {
+  const { articles, getAllArticles } = useArticlesStore((state) => state)
+
+  useEffect(() => {
+    getAllArticles()
+  }, [])
+
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
+    <NavigationMenu className="hidden sm:block">
+      <NavigationMenuList className="gap-12">
         <NavigationMenuItem>
           <NavigationMenuTrigger>Каталог</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
+              {navList.map(({ title, description, href }) => (
+                <ListItem key={title} title={title} href={href}>
+                  {description}
                 </ListItem>
               ))}
             </ul>
@@ -79,29 +103,45 @@ export function NavMenu() {
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md relative"
                     href="/"
                   >
-                    <div className="mb-2 mt-4 text-lg font-medium">
-                      shadcn/ui
-                    </div>
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      Beautifully designed components that you can copy and
-                      paste into your apps. Accessible. Customizable. Open
-                      Source.
-                    </p>
+                    <Image
+                      alt="мастер класс изображение"
+                      src="/img/master-class-img.jpeg"
+                      layout="fill"
+                    />
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Introduction">
-                Re-usable components built using Radix UI and Tailwind CSS.
+              <ListItem
+                href="/docs/masterclass/watercolor"
+                title="Акварельная живопись"
+              >
+                Узнайте техники акварельной живописи от профессионалов.
               </ListItem>
-              <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
+              <ListItem
+                href="/docs/masterclass/oil-painting"
+                title="Масляная живопись"
+              >
+                Изучите основы масляной живописи и создайте свои шедевры.
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
-                Styles for headings, paragraphs, lists...etc
+              <ListItem href="/docs/masterclass/ceramics" title="Керамика">
+                Освоите гончарное дело и создайте уникальные керамические
+                изделия.
               </ListItem>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Интересные статьи</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+              {articles.map(({ title, description }) => (
+                <ListItem key={title} title={title} href="">
+                  {description}
+                </ListItem>
+              ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

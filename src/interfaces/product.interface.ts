@@ -5,15 +5,31 @@ export interface Product {
   description: string
   price: number
   image?: string
-  isAvailable: boolean
+  inStock: boolean
   createdAt: Date
   updatedAt: Date
-  // discountPercentage: number
+  // discount: number
 }
 
 export enum ProductsCategory {
+  all = 'all',
   painting = 'painting',
   ceramics = 'ceramics',
 }
 
 export type ProductRequestType = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>
+
+export type Paginator<T> = {
+  pagesCount: number
+  page: number
+  pageSize: number
+  totalCount: number
+  items: T
+}
+
+export type GetAllProductsQueryParams = {
+  term?: string
+  category?: ProductsCategory
+  limit?: number
+  offset?: number
+}

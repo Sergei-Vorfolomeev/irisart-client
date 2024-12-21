@@ -40,7 +40,7 @@ const productSchema = z.object({
       message: 'Обязательное поле. Должно быть числом',
     })
     .positive({ message: 'Обязательное поле' }),
-  isAvailable: z.boolean(),
+  inStock: z.boolean(),
 })
 
 type ProductSchemaType = z.infer<typeof productSchema>
@@ -49,12 +49,17 @@ type PropsType = {
   mode: 'add' | 'edit'
   trigger: ReactNode
   product?: Product
+  category: ProductsCategory
 }
 
-export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
-  const { addProduct, updateProduct, isLoading } = useProductsStore(
-    (state) => state,
-  )
+export const ProductDialog = ({
+  product,
+  mode,
+  trigger,
+  category,
+}: PropsType) => {
+  const { addProduct, updateProduct, getAllProducts, isLoading } =
+    useProductsStore((state) => state)
   const [isOpen, setIsOpen] = useState(false)
 
   const { handleSubmit, control, reset } = useForm<ProductSchemaType>({
@@ -64,7 +69,7 @@ export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
       description: product?.description || '',
       category: product?.category || undefined,
       price: product?.price || undefined,
-      isAvailable: product?.isAvailable || false,
+      inStock: product?.inStock || false,
     },
   })
 
@@ -74,6 +79,7 @@ export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
     } else {
       await addProduct(data)
     }
+    await getAllProducts({ category })
     setIsOpen(false)
     reset()
   }
@@ -216,15 +222,15 @@ export const ProductDialog = ({ product, mode, trigger }: PropsType) => {
             />
 
             <Controller
-              name="isAvailable"
+              name="inStock"
               control={control}
               render={({ field, fieldState }) => (
                 <div className="grid grid-cols-5 items-center gap-4">
-                  <Label htmlFor="isAvailable" className="text-right">
+                  <Label htmlFor="inStock" className="text-right">
                     В наличии
                   </Label>
                   <Checkbox
-                    id="isAvailable"
+                    id="inStock"
                     name={field.name}
                     checked={field.value}
                     defaultChecked={false}
